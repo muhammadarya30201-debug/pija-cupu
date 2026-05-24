@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notes Secret Buat Pija</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Pacifico&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="sparkle-overlay"></div>
+
+    <div class="container-surat animate-pop">
+        <h1 class="title-script">FOR U MY PIJAA KECIKKK ! 💖</h1>
+        
+        <div class="slideshow-container">
+            <div class="mySlides fade"><img src="assets/imagepija (1).jpeg" style="width:100%"></div>
+            <div class="mySlides fade"><img src="assets/imagepija (2).jpeg" style="width:100%"></div>
+            <div class="mySlides fade"><img src="assets/imagepija (3).jpeg" style="width:100%"></div>
+            <div class="mySlides fade"><img src="assets/imagepija (4).jpeg" style="width:100%"></div>
+            <div class="mySlides fade"><img src="assets/imagepija (5).jpeg" style="width:100%"></div>
+            <div class="mySlides fade"><img src="assets/imagepija (6).jpeg" style="width:100%"></div>
+            <div class="mySlides fade"><img src="assets/imagepija (7).jpeg" style="width:100%"></div>
+            <div class="mySlides fade"><img src="assets/imagepija (8).jpeg" style="width:100%"></div>
+        </div>
+
+        <div class="surat-box">
+            <h3 style="color:#ff477e; margin-bottom:12px; font-family:'Fredoka', sans-serif; display:flex; align-items:center; gap:8px;">
+                💌 Notes Kecil dari Patir Buat Pija:
+            </h3>
+            <p>Aku tau kamu itu orangnya <strong>ngambekan</strong>, <strong>gampang marah</strong>, dan <strong>moodyan</strong> banget. Kadang suka <strong>sok cuek</strong> padahal aslinya ngga (pengen banget diperhatiin kan?), terus suka <strong>sok galak</strong> padahal aslinya lucu dan ngegemesin parah.</p>
+            
+            <p>Kalau lagi marah suka dipasang muka <strong>sok serem</strong>, padahal mah gada serem-seremnya, soalnya aku tau hati kamu <strong>sensitif banget</strong> jadi ga cocok pasang muka serem. Tapi di balik semua sifat ajaib kamu itu, kamu itu punya hati yang <strong>baik banget</strong>, dan itu yang bikin aku gak bisa berhenti sayang sama kamu.</p>
+            
+            <hr style="border: none; border-top: 1px dashed #ffccd5; margin: 15px 0;">
+
+            <p style="color: #590d22; line-height: 1.6;">
+                <strong>Oya, ada sedikit nasihat nih dari Patir..</strong> 🥺<br>
+                Bisa ngga ke depannya kurangi kebiasaan <strong>cancel date mendadak H-beberapa jam</strong>? Kamu itu kalau diajak ketemu <strong>susah bgt</strong>, sekalinya udah janjian malah kadang dibatalin tiba-tiba. Padahal di sini aku udah siap-siap, udah seneng banget dan gak sabar pengen ketemu kamu. Tolong lebih hargai waktu kita yaa sayang, jangan dikit-dikit dicancel lagi ke depannya, okey? 
+            </p>
+            
+            <p style="text-align: center; margin-top: 20px; font-style: italic; color: #ff477e; font-weight: bold;">
+                "Stay with me ya, Pija galak-nya Patir... 🦋✨"
+            </p>
+        </div>
+
+        <a href="index.html" target="_top" class="btn-back">⬅️ Kembali ke Menu Utama</a>
+    </div>
+
+    <script>
+        let slideIndex = 0;
+        showSlides();
+        function showSlides() {
+            let slides = document.getElementsByClassName("mySlides");
+            for (let i = 0; i < slides.length; i++) slides[i].style.display = "none";
+            slideIndex++;
+            if (slideIndex > slides.length) slideIndex = 1;
+            slides[slideIndex-1].style.display = "block";
+            setTimeout(showSlides, 2500);
+        }
+    </script>
+</body>
+</html>

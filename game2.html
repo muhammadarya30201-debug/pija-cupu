@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game 2: Memory Match 🍓</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Pacifico&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .stats { background: white; padding: 12px 30px; border-radius: 50px; color: #ff477e; font-weight: 700; margin-bottom: 25px; border: 3px solid white; box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
+        .grid-memory { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; max-width: 400px; width: 100%; margin-bottom: 20px; }
+        .card-mem { aspect-ratio: 1; background: #ff477e; border-radius: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 2rem; color: transparent; transition: 0.3s; border: 3px solid white; box-shadow: 0 8px 15px rgba(0,0,0,0.05); }
+        .card-mem.flipped { background: white; color: initial; transform: rotateY(180deg); border-color: #ffb3c6; }
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 240, 243, 0.7); display: none; justify-content: center; align-items: center; z-index: 100; backdrop-filter: blur(8px); }
+    </style>
+</head>
+<body>
+    <div class="sparkle-overlay"></div>
+
+    <section class="page-section">
+        <div class="stats">Cocok: <span id="m">0</span> / 8</div>
+        <div class="grid-memory" id="grid"></div>
+    </section>
+
+    <div class="modal-overlay" id="winModal">
+        <div class="card-glass-game" style="max-width: 400px;">
+            <h2 class="title-script">Ingatan Oke Juga.. ✨</h2>
+            <p style="font-family:'Fredoka',sans-serif; font-weight:600; color:#590d22; margin-top:10px;">Ingatannya kuat, pantesan kalau aku salah dikit diinget terus sampe ngambek. Yuk, tantangan dilanjutkan ke game 3!</p>
+            <button class="btn-primary-pink" onclick="location.href='game3.html'" style="margin-top:20px;">Lanjut Game 3 🚀</button>
+        </div>
+    </div>
+
+    <script>
+        const icons = ['💖', '🐱', '🧸', '🍰', '🍿', '🍦', '🍩', '💌'];
+        let items = [...icons, ...icons].sort(() => Math.random() - 0.5);
+        let flipped = [], matched = 0;
+        items.forEach(icon => {
+            const card = document.createElement('div');
+            card.className = 'card-mem'; card.innerHTML = icon;
+            card.onclick = () => {
+                if (flipped.length < 2 && !card.classList.contains('flipped')) {
+                    card.classList.add('flipped'); flipped.push(card);
+                    if (flipped.length === 2) {
+                        if (flipped[0].innerHTML === flipped[1].innerHTML) { matched++; document.getElementById('m').innerText = matched; flipped = []; if (matched === 8) document.getElementById('winModal').style.display = 'flex'; }
+                        else setTimeout(() => { flipped.forEach(c => c.classList.remove('flipped')); flipped = []; }, 800);
+                    }
+                }
+            };
+            document.getElementById('grid').appendChild(card);
+        });
+    </script>
+</body>
+</html>

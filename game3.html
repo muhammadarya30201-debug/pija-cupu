@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game 3: Word Search 🔍</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Pacifico&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .clue-box { 
+            background: white; border: 3px dashed #ff477e; border-radius: 25px; 
+            padding: 20px; text-align: left; max-width: 480px; margin: 0 auto 20px; 
+            font-weight: 600; color: #590d22; font-size: 1.05rem; line-height: 1.6;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.02);
+        }
+        .clue-box span.found-text {
+            text-decoration: line-through;
+            color: #b7b7b7 !important;
+            transition: all 0.4s ease;
+        }
+        .clue-box span { color: #ff477e; font-weight: 700; display: inline-block; }
+        .grid-search { display: grid; grid-template-columns: repeat(10, 36px); gap: 6px; background: white; padding: 15px; border-radius: 25px; touch-action: none; border: 4px solid white; box-shadow: 0 15px 30px rgba(0,0,0,0.05); margin-top: 10px; }
+        .cell-search { width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; font-weight: 700; background: #fff5f7; border-radius: 10px; cursor: pointer; font-family: 'Fredoka', sans-serif; color: #4a4a4a; font-size: 1.1rem; transition: background 0.2s; }
+        .cell-search.selected { background: #ff477e; color: white; }
+        .cell-search.found { background: #bee3f8; color: #2b6cb0; }
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 240, 243, 0.7); display: none; justify-content: center; align-items: center; backdrop-filter: blur(8px); z-index: 100; }
+        
+        @keyframes pulse { 0% { transform: scale(0.9); opacity: 0.7; } 100% { transform: scale(1.2); opacity: 1; } }
+    </style>
+</head>
+<body>
+    <div class="sparkle-overlay"></div>
+
+    <section class="page-section">
+        <div style="margin-bottom:12px; font-weight:700; color:#ff477e; font-size:1.3rem; font-family:'Fredoka', sans-serif;">
+            🔍 Kata Ditemukan: <span id="fc">0</span> / 7
+        </div>
+        
+        <div class="clue-box">
+            "I just want you to know that because you are the most <span id="txt-BEAUTIFUL">BEAUTIFUL</span> person I ever met, I want to give all my <span id="txt-LOVE">LOVE</span> to you. I really hope this lasts <span id="txt-FOREVER">FOREVER</span>, because you bring so much <span id="txt-HAPPINESS">HAPPINESS</span> into my life. I'm so glad you are <span id="txt-MINE">MINE</span>, you <span id="txt-CUTE">CUTE</span> little human. Truly, you mean <span id="txt-EVERYTHING">EVERYTHING</span> to me."
+            <br><br>
+            <em style="font-size:0.85rem; color:#888; font-weight:500;">(Drag/usap huruf di bawah untuk mencari kata di atas!)</em>
+        </div>
+
+        <div class="grid-search" id="grid"></div>
+    </section>
+
+    <div class="modal-overlay" id="winModal">
+        <div class="card-glass-game" style="max-width: 420px;">
+            <h2 class="title-script">Pinter Banget Pija! 🥰</h2>
+            <p style="font-family:'Fredoka',sans-serif; font-weight:600; color:#590d22; margin-top:10px;">Semua kata rahasia berhasil ditemukan!</p>
+            <button class="btn-primary-pink" onclick="transisiLoading()" style="margin-top:20px;">Buka Surat ❤️</button>
+        </div>
+    </div>
+
+    <div id="loadingScreen" style="position:fixed; top:0; left:0; width:100vw; height:100vh; background:#ffe5ec; z-index:999; display:none; flex-direction:column; align-items:center; justify-content:center; font-family:'Fredoka', sans-serif;">
+        <div style="font-size:4rem; animation: pulse 0.8s infinite alternate;">🦋</div>
+        <div style="margin-top:20px; font-weight:700; color:#ff477e; font-size:1.3rem; letter-spacing:0.5px;" id="loadingText">Menyiapkan rahasia buat Pija...</div>
+    </div>
+
+    <script>
+        const words = ["BEAUTIFUL", "LOVE", "FOREVER", "HAPPINESS", "MINE", "CUTE", "EVERYTHING"];
+        let found = [], isDragging = false, selected = [];
+        
+        const matrix = [
+            ['B','E','A','U','T','I','F','U','L','X'],
+            ['H','A','P','P','I','N','E','S','S','O'],
+            ['E','V','E','R','Y','T','H','I','N','G'],
+            ['F','O','R','E','V','E','R','V','A','X'],
+            ['Q','W','E','R','T','Y','M','I','N','E'],
+            ['L','O','V','E','Z','X','C','V','B','N'],
+            ['C','U','T','E','A','S','D','F','G','H'],
+            ['U','I','O','P','K','L','J','H','G','F'],
+            ['Z','X','C','V','B','N','M','Q','W','E'],
+            ['A','S','D','F','G','H','J','K','L','M']
+        ];
+        
+        matrix.forEach((row, r) => row.forEach((char, c) => {
+            const cell = document.createElement('div'); 
+            cell.className = 'cell-search'; cell.innerText = char;
+            cell.onmousedown = (e) => { e.preventDefault(); startSelection(cell); };
+            cell.onmouseover = () => { moveSelection(cell); };
+            cell.ontouchstart = (e) => { e.preventDefault(); startSelection(cell); };
+            document.getElementById('grid').appendChild(cell);
+        }));
+
+        function startSelection(cell) { isDragging = true; if(!cell.classList.contains('found')) { cell.classList.add('selected'); selected.push(cell); } }
+        function moveSelection(cell) { if (isDragging && !cell.classList.contains('selected') && !cell.classList.contains('found')) { cell.classList.add('selected'); selected.push(cell); } }
+        
+        const endSelection = () => { 
+            if (isDragging) { 
+                const currentWord = selected.map(c => c.innerText).join(''); 
+                if (words.includes(currentWord) && !found.includes(currentWord)) { 
+                    found.push(currentWord); 
+                    document.getElementById('fc').innerText = found.length; 
+                    selected.forEach(c => c.className = 'cell-search found'); 
+                    const textTarget = document.getElementById(`txt-${currentWord}`);
+                    if(textTarget) textTarget.classList.add('found-text');
+                    if (found.length === 7) document.getElementById('winModal').style.display = 'flex';
+                } else { selected.forEach(c => c.classList.remove('selected')); } 
+                selected = []; isDragging = false; 
+            } 
+        };
+        
+        document.onmouseup = document.ontouchend = endSelection;
+        document.body.addEventListener('touchmove', (e) => { 
+            if (!isDragging) return; 
+            const touch = e.touches[0]; 
+            const el = document.elementFromPoint(touch.clientX, touch.clientY); 
+            if (el && el.classList.contains('cell-search') && !selected.includes(el) && !el.classList.contains('found')) { el.classList.add('selected'); selected.push(el); } 
+        }, {passive: false});
+
+        function transisiLoading() {
+            document.getElementById('winModal').style.display = 'none';
+            document.getElementById('loadingScreen').style.display = 'flex';
+            setTimeout(() => { document.getElementById('loadingText').innerText = "Sabar ya Pija sayang... ✨"; }, 1500);
+            setTimeout(() => { window.location.href = 'surat.html'; }, 3000);
+        }
+    </script>
+</body>
+</html>
